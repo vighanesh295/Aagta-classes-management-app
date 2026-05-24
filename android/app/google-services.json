@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "879216565551",
+    "project_id": "aagte-classes",
+    "storage_bucket": "aagte-classes.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879216565551:android:d699c7bd74b975ef2015da",
+        "android_client_info": {
+          "package_name": "com.example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmQXANbV-yqRYymPD82xu4fx2H8MBdWS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879216565551:android:f42743d2118bc0142015da",
+        "android_client_info": {
+          "package_name": "com.example.aagte_classes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmQXANbV-yqRYymPD82xu4fx2H8MBdWS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
