@@ -1,5 +1,4 @@
 // lib/models/lecture_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class LectureModel extends Equatable {
@@ -44,34 +43,31 @@ class LectureModel extends Equatable {
     return LectureModel(
       id:           id,
       subject:      map['subject']     as String? ?? '',
-      teacherId:    map['teacherId']   as String? ?? '',
+      teacherId:    map['teacher_id']   as String? ?? '',
       teacherName:  map['teacherName'] as String? ?? '',
-      batchId:      map['batchId']     as String? ?? '',
-      batchName:    map['batchName']   as String? ?? '',
-      startTime:   (map['startTime']   as Timestamp?)?.toDate() ?? DateTime.now(),
-      endTime:     (map['endTime']     as Timestamp?)?.toDate() ?? DateTime.now(),
+      batchId:      map['batch_id']     as String? ?? '',
+      batchName:    map['batch_name']   as String? ?? '',
+      startTime:   DateTime.tryParse(map['startTime']?.toString() ?? '') ?? DateTime.now(),
+      endTime:     DateTime.tryParse(map['endTime']?.toString() ?? '') ?? DateTime.now(),
       room:         map['room']        as String?,
       topic:        map['topic']       as String?,
       isCancelled:  map['isCancelled'] as bool? ?? false,
-      createdAt:   (map['createdAt']   as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt:   DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.now(),
     );
   }
 
-  factory LectureModel.fromDoc(DocumentSnapshot doc) =>
-      LectureModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-
   Map<String, dynamic> toMap() => {
     'subject':     subject,
-    'teacherId':   teacherId,
+    'teacher_id':   teacherId,
     'teacherName': teacherName,
-    'batchId':     batchId,
-    'batchName':   batchName,
-    'startTime':   Timestamp.fromDate(startTime),
-    'endTime':     Timestamp.fromDate(endTime),
+    'batch_id':     batchId,
+    'batch_name':   batchName,
+    'startTime':   startTime.toIso8601String(),
+    'endTime':     endTime.toIso8601String(),
     'room':        room,
     'topic':       topic,
     'isCancelled': isCancelled,
-    'createdAt':   Timestamp.fromDate(createdAt),
+    'created_at':   createdAt.toIso8601String(),
   };
 
   @override

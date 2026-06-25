@@ -1,9 +1,9 @@
-﻿// lib/features/teacher/screens/student_attendance_screen.dart
+// lib/features/teacher/screens/student_attendance_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/services/firebase_service.dart';
+import '../../../core/services/supabase_service.dart';
 import '../../../models/attendance_model.dart';
 import '../../../models/student_model.dart';
 import '../../../providers/student_provider.dart';
@@ -41,21 +41,24 @@ class _StudentAttendanceScreenState extends ConsumerState<StudentAttendanceScree
     }
     setState(() => _saving = true);
     try {
-      final batch = FirebaseService.instance.firestore.batch();
       final now = DateTime.now();
-      for (final s in students) {
-        final ref = FirebaseService.instance.attendance.doc();
+      final rows = students.map((s) {
         final status = _statuses[s.uid] ?? AttendanceStatus.present;
-        batch.set(ref, AttendanceModel(
-          id:        ref.id,
+        final map = AttendanceModel(
+          id:        '',
           studentId: s.uid,
           lectureId: _selectedLectureId!,
           subject:   'Class',
           date:      now,
           status:    status,
-        ).toMap());
+        ).toMap();
+        map.remove('id');
+        return map;
+      }).toList();
+      
+      if (rows.isNotEmpty) {
+        await SupabaseService.instance.client.from('attendance').insert(rows);
       }
-      await batch.commit();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Attendance saved!'), backgroundColor: Colors.green),

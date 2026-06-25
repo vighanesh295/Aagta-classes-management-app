@@ -29,7 +29,7 @@ import '../features/admin/screens/fee_management_screen.dart';
 import '../features/admin/screens/analytics_screen.dart';
 import '../features/admin/screens/batch_management_screen.dart';
 import '../features/admin/screens/announcements_screen.dart';
-import '../features/common/screens/settings_screen.dart';
+import '../features/common/screens/profile_screen.dart';
 
 // ── Route names ────────────────────────────────────────────────────────────
 class Routes {
@@ -60,7 +60,7 @@ class Routes {
   static const batchManagement  = '/admin/batches';
   static const announcements    = '/admin/announcements';
 
-  static const settings         = '/settings';
+  static const profile          = '/profile';
 }
 
 // ── Router provider ────────────────────────────────────────────────────────
@@ -128,7 +128,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.announcements,   builder: (_, __) => Theme(data: AppTheme.adminLight, child: const AdminAnnouncementsScreen())),
 
       // Common
-      GoRoute(path: Routes.settings, builder: (_, __) => const SettingsScreen()),
+      GoRoute(path: Routes.profile,  builder: (_, __) => const ProfileScreen()),
     ],
     errorBuilder: (context, state) => Scaffold(
       body: Center(child: Text('Page not found: ${state.error}')),

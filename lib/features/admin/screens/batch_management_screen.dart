@@ -1,22 +1,20 @@
-﻿// lib/features/admin/screens/batch_management_screen.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
+// lib/features/admin/screens/batch_management_screen.dart
+import '../../../core/services/supabase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/services/firebase_service.dart';
+
 import '../../../core/utils/validators.dart';
 import '../../../widgets/golden_button.dart';
 import '../../../widgets/gradient_app_bar.dart';
 import '../../../widgets/premium_card.dart';
 
 final _batchesProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
-  return FirebaseService.instance.batches
-      .orderBy('name')
-      .snapshots()
-      .map((snap) => snap.docs
-          .map((d) => {'id': d.id, ...d.data() as Map<String, dynamic>})
-          .toList());
+  return SupabaseService.instance.client
+      .from('batches')
+      .stream(primaryKey: ['id'])
+      .order('name');
 });
 
 class BatchManagementScreen extends ConsumerStatefulWidget {
@@ -39,10 +37,10 @@ class _BatchManagementScreenState extends ConsumerState<BatchManagementScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     try {
-      await FirebaseService.instance.batches.add({
+      await SupabaseService.instance.client.from('batches').insert({
         'name': _nameCtrl.text.trim(),
         'subject': _subjectCtrl.text.trim(),
-        'createdAt': Timestamp.now(),
+        'created_at': DateTime.now().toIso8601String(),
         'studentCount': 0,
       });
       setState(() { _showForm = false; _saving = false; });
@@ -70,7 +68,7 @@ class _BatchManagementScreenState extends ConsumerState<BatchManagementScreen> {
         ],
       ),
     );
-    if (ok == true) await FirebaseService.instance.batches.doc(id).delete();
+    if (ok == true) await SupabaseService.instance.client.from('batches').delete().eq('id', id);
   }
 
   @override

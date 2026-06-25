@@ -1,7 +1,6 @@
 // lib/providers/admin_provider.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../core/services/firebase_service.dart';
+import '../core/services/supabase_service.dart';
 import '../models/student_model.dart';
 import '../models/teacher_model.dart';
 import '../models/lecture_model.dart';
@@ -31,14 +30,14 @@ class AdminState {
 class AdminNotifier extends StateNotifier<AdminState> {
   AdminNotifier() : super(const AdminState());
 
-  final _fb = FirebaseService.instance;
+  final _supabase = SupabaseService.instance;
 
   // ── Create Student ──────────────────────────────────────────────────────────
   Future<void> createStudent(StudentModel student) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _fb.students.doc(student.uid).set(student.toMap());
-      await _fb.users.doc(student.uid).set(student.toMap(), SetOptions(merge: true));
+      await _supabase.setDoc('students', student.uid, student.toMap());
+      await _supabase.setDoc('users', student.uid, student.toMap());
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -49,7 +48,7 @@ class AdminNotifier extends StateNotifier<AdminState> {
   Future<void> updateStudent(String uid, Map<String, dynamic> data) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _fb.students.doc(uid).update(data);
+      await _supabase.updateDoc('students', uid, data);
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -60,8 +59,8 @@ class AdminNotifier extends StateNotifier<AdminState> {
   Future<void> deleteStudent(String uid) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _fb.students.doc(uid).delete();
-      await _fb.users.doc(uid).delete();
+      await _supabase.deleteDoc('students', uid);
+      await _supabase.deleteDoc('users', uid);
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -72,8 +71,8 @@ class AdminNotifier extends StateNotifier<AdminState> {
   Future<void> createTeacher(TeacherModel teacher) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _fb.teachers.doc(teacher.uid).set(teacher.toMap());
-      await _fb.users.doc(teacher.uid).set(teacher.toMap(), SetOptions(merge: true));
+      await _supabase.setDoc('teachers', teacher.uid, teacher.toMap());
+      await _supabase.setDoc('users', teacher.uid, teacher.toMap());
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -84,7 +83,9 @@ class AdminNotifier extends StateNotifier<AdminState> {
   Future<void> scheduleLecture(LectureModel lecture) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _fb.lectures.add(lecture.toMap());
+      final map = lecture.toMap();
+      map.remove('id'); // Let DB auto-generate UUID or we pass it
+      await _supabase.client.from('lectures').insert(map);
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -95,7 +96,9 @@ class AdminNotifier extends StateNotifier<AdminState> {
   Future<void> createAnnouncement(AnnouncementModel ann) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _fb.announcements.add(ann.toMap());
+      final map = ann.toMap();
+      map.remove('id');
+      await _supabase.client.from('announcements').insert(map);
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -106,10 +109,10 @@ class AdminNotifier extends StateNotifier<AdminState> {
   Future<void> updateFeePayment(String feeId, double newPaidAmount) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _fb.fees.doc(feeId).update({
+      await _supabase.client.from('fees').update({
         'paidAmount': newPaidAmount,
-        'updatedAt':  Timestamp.now(),
-      });
+        'updated_at':  DateTime.now().toIso8601String(),
+      }).eq('id', feeId);
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -124,17 +127,19 @@ final adminNotifierProvider =
 
 // ── All Lectures (admin) ──────────────────────────────────────────────────────
 final allLecturesProvider = StreamProvider<List<LectureModel>>((ref) {
-  return FirebaseService.instance.lectures
-      .orderBy('startTime', descending: true)
+  return SupabaseService.instance.client
+      .from('lectures')
+      .stream(primaryKey: ['id'])
+      .order('startTime', ascending: false)
       .limit(100)
-      .snapshots()
-      .map((snap) => snap.docs.map(LectureModel.fromDoc).toList());
+      .map((rows) => rows.map((row) => LectureModel.fromMap(row, row['id'])).toList());
 });
 
 // ── All Announcements (admin) ─────────────────────────────────────────────────
 final allAnnouncementsProvider = StreamProvider<List<AnnouncementModel>>((ref) {
-  return FirebaseService.instance.announcements
-      .orderBy('createdAt', descending: true)
-      .snapshots()
-      .map((snap) => snap.docs.map(AnnouncementModel.fromDoc).toList());
+  return SupabaseService.instance.client
+      .from('announcements')
+      .stream(primaryKey: ['id'])
+      .order('created_at', ascending: false)
+      .map((rows) => rows.map((row) => AnnouncementModel.fromMap(row, row['id'])).toList());
 });

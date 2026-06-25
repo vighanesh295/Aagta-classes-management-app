@@ -66,8 +66,6 @@ class _TeacherDashboardState extends ConsumerState<TeacherDashboard> {
             ),
             actions: [
               _buildAppBarIcon(Icons.notifications_none_rounded, true, () => context.push(Routes.notifications)),
-              const SizedBox(width: 8),
-              _buildAppBarIcon(Icons.settings_outlined, false, () => context.push(Routes.settings)),
               const SizedBox(width: 16),
             ],
           ),
@@ -542,7 +540,7 @@ class _TeacherBottomNav extends StatelessWidget {
             ),
             
             _NavItem(icon: Icons.people_rounded, label: 'Students', isSelected: currentIndex == 2, onTap: () => onTap(2)),
-            _NavItem(icon: Icons.person_rounded, label: 'Profile', isSelected: currentIndex == 3, onTap: () => onTap(3)),
+            _NavItem(icon: Icons.person_rounded, label: 'Profile', isSelected: false, onTap: () => context.push(Routes.profile)),
           ],
         ),
       ),
@@ -626,7 +624,6 @@ class _TeacherDrawer extends ConsumerWidget {
       _DrawerItem(Icons.assignment_rounded,       'Homework',   () => context.push(Routes.homework)),
       _DrawerItem(Icons.notifications_outlined,   'Notifications', () => context.push(Routes.notifications)),
       const Divider(),
-      _DrawerItem(Icons.settings_outlined,        'Settings',   () => context.push(Routes.settings)),
       _DrawerItem(Icons.logout_rounded,           'Logout',     () {
         ref.read(authNotifierProvider.notifier).signOut();
         context.go(Routes.login);

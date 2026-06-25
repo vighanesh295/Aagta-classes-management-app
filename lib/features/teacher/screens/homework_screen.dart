@@ -1,10 +1,10 @@
-﻿// lib/features/teacher/screens/homework_screen.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
+// lib/features/teacher/screens/homework_screen.dart
+import '../../../core/services/supabase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/services/firebase_service.dart';
+
 import '../../../core/utils/app_date_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../providers/auth_provider.dart';
@@ -15,14 +15,12 @@ import '../../../widgets/stat_card.dart';
 final _homeworkProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
   final user = ref.watch(currentUserProvider).valueOrNull;
   if (user == null) return Stream.value([]);
-  return FirebaseService.instance.homework
-      .where('teacherId', isEqualTo: user.uid)
-      .orderBy('dueDate', descending: true)
-      .limit(30)
-      .snapshots()
-      .map((snap) => snap.docs
-          .map((d) => {'id': d.id, ...d.data() as Map<String, dynamic>})
-          .toList());
+  return SupabaseService.instance.client
+      .from('homework')
+      .stream(primaryKey: ['id'])
+      .eq('teacher_id', user.uid)
+      .order('dueDate', ascending: false)
+      .limit(30);
 });
 
 class HomeworkScreen extends ConsumerStatefulWidget {
@@ -54,13 +52,13 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
     try {
       final user = ref.read(currentUserProvider).valueOrNull;
       if (user == null) return;
-      await FirebaseService.instance.homework.add({
+      await SupabaseService.instance.client.from('homework').insert({
         'title':     _titleCtrl.text.trim(),
         'subject':   _subjectCtrl.text.trim(),
         'description': _descCtrl.text.trim(),
-        'teacherId': user.uid,
-        'dueDate':   Timestamp.fromDate(_dueDate),
-        'createdAt': Timestamp.now(),
+        'teacher_id': user.uid,
+        'dueDate':   _dueDate.toIso8601String(),
+        'created_at': DateTime.now().toIso8601String(),
       });
       setState(() { _showForm = false; _saving = false; });
       _titleCtrl.clear(); _subjectCtrl.clear(); _descCtrl.clear();
@@ -177,7 +175,7 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
               return Column(
                 children: hws.asMap().entries.map((e) {
                   final hw = e.value;
-                  final due = (hw['dueDate'] as Timestamp?)?.toDate() ?? DateTime.now();
+                  final due = DateTime.tryParse(hw['dueDate']?.toString() ?? '') ?? DateTime.now();
                   return PremiumCard(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: Row(children: [

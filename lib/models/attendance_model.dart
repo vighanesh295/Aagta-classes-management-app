@@ -1,5 +1,4 @@
 // lib/models/attendance_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 enum AttendanceStatus { present, absent, late }
@@ -44,25 +43,22 @@ class AttendanceModel extends Equatable {
   factory AttendanceModel.fromMap(Map<String, dynamic> map, String id) {
     return AttendanceModel(
       id:        id,
-      studentId: map['studentId'] as String? ?? '',
+      studentId: map['student_id'] as String? ?? '',
       lectureId: map['lectureId'] as String? ?? '',
       subject:   map['subject']   as String? ?? '',
-      date:     (map['date']      as Timestamp?)?.toDate() ?? DateTime.now(),
+      date:      DateTime.tryParse(map['date']?.toString() ?? '') ?? DateTime.now(),
       status:    AttendanceStatusX.fromString(map['status'] as String? ?? 'absent'),
-      teacherId: map['teacherId'] as String?,
+      teacherId: map['teacher_id'] as String?,
     );
   }
 
-  factory AttendanceModel.fromDoc(DocumentSnapshot doc) =>
-      AttendanceModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-
   Map<String, dynamic> toMap() => {
-    'studentId': studentId,
+    'student_id': studentId,
     'lectureId': lectureId,
     'subject':   subject,
-    'date':      Timestamp.fromDate(date),
+    'date':      date.toIso8601String(),
     'status':    status.label.toLowerCase(),
-    'teacherId': teacherId,
+    'teacher_id': teacherId,
   };
 
   @override

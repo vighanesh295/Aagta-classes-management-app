@@ -32,7 +32,7 @@ class _StudentDashboardState extends ConsumerState<StudentDashboard> {
         onTap: (i) {
           if (i == 1) { context.push(Routes.attendance); return; }
           if (i == 2) { context.push(Routes.notifications); return; }
-          if (i == 3) { context.push(Routes.studentProfile); return; }
+          if (i == 3) { context.push(Routes.profile); return; }
           setState(() => _idx = i);
         },
       ),
@@ -117,7 +117,7 @@ class _HomeTab extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 100, 20, 16),
               child: Row(children: [
                 GestureDetector(
-                  onTap: () => context.push(Routes.studentProfile),
+                  onTap: () => context.push(Routes.profile),
                   child: CircleAvatar(
                     radius: 28,
                     backgroundColor: Theme.of(context).colorScheme.primary,
@@ -169,12 +169,7 @@ class _HomeTab extends ConsumerWidget {
               ]),
             ),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings_outlined, color: Colors.white),
-              onPressed: () => context.push(Routes.settings),
-            ),
-          ],
+          actions: const [],
         ),
 
         SliverPadding(

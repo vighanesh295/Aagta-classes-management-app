@@ -11,13 +11,11 @@ import '../../../routes/app_router.dart';
 // ── Colors ─────────────────────────────────────────────────────────────
 const _orangePrimary = Color(0xFFF97316);
 const _orangeLight   = Color(0xFFFB923C);
-const _orangePale    = Color(0xFFFFF0E6);
 const _background    = Color(0xFFF1F1F1);
 const _cardBg        = Color(0xFFFFFFFF);
 const _cardBorder    = Color(0xFFE5E5E5);
 const _textPrimary   = Color(0xFF1F2937);
 const _textSecondary = Color(0xFF9A9A9A);
-const _grayBorder    = Color(0xFFBDBDBD);
 
 class AdminDashboard extends ConsumerStatefulWidget {
   const AdminDashboard({super.key});
@@ -110,10 +108,6 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                             ],
                           ),
                           const SizedBox(width: 8),
-                          _SquareIconButton(
-                            icon: Icons.settings_outlined,
-                            onTap: () => context.push(Routes.settings),
-                          ),
                         ],
                       ),
                     ),
@@ -220,11 +214,11 @@ class _WelcomeHeroCard extends StatelessWidget {
           stops: [0.0, 1.0],
           transform: GradientRotation(135 * 3.14159 / 180),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: const Color.fromRGBO(249, 115, 22, 0.28),
+            color: Color.fromRGBO(249, 115, 22, 0.28),
             blurRadius: 20,
-            offset: const Offset(0, 8),
+            offset: Offset(0, 8),
           ),
         ],
       ),
@@ -278,8 +272,14 @@ class _WelcomeHeroCard extends StatelessWidget {
                           Text('Welcome back,',
                             style: GoogleFonts.nunito(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, fontWeight: FontWeight.w600),
                           ),
-                          Text('Administrator',
-                            style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, height: 1.1),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text('Administrator',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, height: 1.1),
+                            ),
                           ),
                         ],
                       ),
@@ -316,12 +316,12 @@ class _WelcomeHeroCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 // Bottom Row Stats
-                Row(
+                const Row(
                   children: [
                     Expanded(child: _HeroStatChip(number: '248', label: 'STUDENTS')),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Expanded(child: _HeroStatChip(number: '18', label: 'TEACHERS')),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Expanded(child: _HeroStatChip(number: '6', label: 'BATCHES')),
                   ],
                 )
@@ -492,9 +492,9 @@ class _QuickAccessGrid extends StatelessWidget {
               ) : null,
               borderRadius: BorderRadius.circular(13),
               border: Border.all(color: isFeatured ? Colors.transparent : _cardBorder, width: 1.5),
-              boxShadow: isFeatured ? [
-                BoxShadow(color: const Color.fromRGBO(249, 115, 22, 0.3), blurRadius: 12, offset: const Offset(0, 6))
-              ] : [],
+              boxShadow: isFeatured ? const [
+                BoxShadow(color: Color.fromRGBO(249, 115, 22, 0.3), blurRadius: 12, offset: Offset(0, 6))
+              ] : const [],
             ),
             child: cardContent,
           ),
@@ -583,7 +583,7 @@ class _BottomNavBar extends StatelessWidget {
               _NavItem(icon: Icons.people_rounded, label: 'Users', isSelected: currentIndex == 1, onTap: () => onTap(1)),
               const SizedBox(width: 60), // FAB space
               _NavItem(icon: Icons.account_balance_wallet_rounded, label: 'Fees', isSelected: currentIndex == 2, onTap: () => onTap(2)),
-              _NavItem(icon: Icons.settings_rounded, label: 'Settings', isSelected: currentIndex == 3, onTap: () => onTap(3)),
+              _NavItem(icon: Icons.person_rounded, label: 'Profile', isSelected: false, onTap: () => context.push(Routes.profile)),
             ],
           ),
           Positioned(
@@ -592,10 +592,10 @@ class _BottomNavBar extends StatelessWidget {
               onTap: () {},
               child: Container(
                 width: 52, height: 52,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(colors: [_orangePrimary, _orangeLight]),
-                  boxShadow: const [
+                  gradient: LinearGradient(colors: [_orangePrimary, _orangeLight]),
+                  boxShadow: [
                     BoxShadow(color: Color.fromRGBO(249, 115, 22, 0.40), blurRadius: 12, offset: Offset(0, 4)),
                   ],
                 ),
@@ -686,7 +686,6 @@ class _AdminDrawer extends ConsumerWidget {
       _DItem(Icons.groups_rounded,              'Batches',        () => context.push(Routes.batchManagement)),
       _DItem(Icons.campaign_rounded,            'Announcements',  () => context.push(Routes.announcements)),
       const Divider(),
-      _DItem(Icons.settings_outlined,           'Settings',       () => context.push(Routes.settings)),
       _DItem(Icons.logout_rounded,              'Logout',         () {
         ref.read(authNotifierProvider.notifier).signOut();
         context.go(Routes.login);

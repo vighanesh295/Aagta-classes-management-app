@@ -1,5 +1,4 @@
 // lib/models/result_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class ResultModel extends Equatable {
@@ -43,31 +42,28 @@ class ResultModel extends Equatable {
   factory ResultModel.fromMap(Map<String, dynamic> map, String id) {
     return ResultModel(
       id:          id,
-      studentId:   map['studentId']   as String? ?? '',
+      studentId:   map['student_id']   as String? ?? '',
       studentName: map['studentName'] as String? ?? '',
       examName:    map['examName']    as String? ?? '',
       subject:     map['subject']     as String? ?? '',
       marks:      (map['marks']       as num?)?.toDouble() ?? 0,
-      totalMarks: (map['totalMarks']  as num?)?.toDouble() ?? 100,
+      totalMarks: (map['total_marks']  as num?)?.toDouble() ?? 100,
       grade:       map['grade']       as String?,
       remarks:     map['remarks']     as String?,
-      examDate:   (map['examDate']    as Timestamp?)?.toDate() ?? DateTime.now(),
+      examDate:   DateTime.tryParse(map['examDate']?.toString() ?? '') ?? DateTime.now(),
     );
   }
 
-  factory ResultModel.fromDoc(DocumentSnapshot doc) =>
-      ResultModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-
   Map<String, dynamic> toMap() => {
-    'studentId':   studentId,
+    'student_id':   studentId,
     'studentName': studentName,
     'examName':    examName,
     'subject':     subject,
     'marks':       marks,
-    'totalMarks':  totalMarks,
+    'total_marks':  totalMarks,
     'grade':       grade,
     'remarks':     remarks,
-    'examDate':    Timestamp.fromDate(examDate),
+    'examDate':    examDate.toIso8601String(),
   };
 
   @override

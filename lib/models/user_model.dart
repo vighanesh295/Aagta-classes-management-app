@@ -1,5 +1,4 @@
 // lib/models/user_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 enum UserRole { student, teacher, admin }
@@ -51,27 +50,23 @@ class UserModel extends Equatable {
       email:     map['email']    as String? ?? '',
       name:      map['name']     as String? ?? '',
       role:      UserRoleX.fromString(map['role'] as String? ?? 'student'),
-      photoUrl:  map['photoUrl'] as String?,
+      photoUrl:  map['photo_url'] as String?,
       phone:     map['phone']    as String?,
       fcmToken:  map['fcmToken'] as String?,
       isActive:  map['isActive'] as bool? ?? true,
-      createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt: DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.now(),
     );
-  }
-
-  factory UserModel.fromDoc(DocumentSnapshot doc) {
-    return UserModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
   }
 
   Map<String, dynamic> toMap() => {
     'email':     email,
     'name':      name,
     'role':      role.name,
-    'photoUrl':  photoUrl,
+    'photo_url':  photoUrl,
     'phone':     phone,
     'fcmToken':  fcmToken,
     'isActive':  isActive,
-    'createdAt': Timestamp.fromDate(createdAt),
+    'created_at': createdAt.toIso8601String(),
   };
 
   UserModel copyWith({

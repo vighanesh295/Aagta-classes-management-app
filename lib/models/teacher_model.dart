@@ -1,5 +1,4 @@
 // lib/models/teacher_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class TeacherModel extends Equatable {
@@ -33,28 +32,25 @@ class TeacherModel extends Equatable {
       name:          map['name']          as String? ?? '',
       email:         map['email']         as String? ?? '',
       phone:         map['phone']         as String?,
-      photoUrl:      map['photoUrl']      as String?,
+      photoUrl:      map['photo_url']      as String?,
       subject:       map['subject']       as String?,
       qualification: map['qualification'] as String?,
       batches:       List<String>.from(map['batches'] as List? ?? []),
       isActive:      map['isActive']      as bool? ?? true,
-      joinedAt:     (map['joinedAt']      as Timestamp?)?.toDate() ?? DateTime.now(),
+      joinedAt: DateTime.tryParse(map['joinedAt']?.toString() ?? '') ?? DateTime.now(),
     );
   }
-
-  factory TeacherModel.fromDoc(DocumentSnapshot doc) =>
-      TeacherModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
 
   Map<String, dynamic> toMap() => {
     'name':          name,
     'email':         email,
     'phone':         phone,
-    'photoUrl':      photoUrl,
+    'photo_url':      photoUrl,
     'subject':       subject,
     'qualification': qualification,
     'batches':       batches,
     'isActive':      isActive,
-    'joinedAt':      Timestamp.fromDate(joinedAt),
+    'joinedAt':      joinedAt.toIso8601String(),
     'role':          'teacher',
   };
 

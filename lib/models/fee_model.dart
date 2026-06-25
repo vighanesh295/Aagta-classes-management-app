@@ -1,5 +1,4 @@
 // lib/models/fee_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 enum FeeStatus { paid, pending, overdue }
@@ -58,32 +57,28 @@ class FeeModel extends Equatable {
   factory FeeModel.fromMap(Map<String, dynamic> map, String id) {
     return FeeModel(
       id:           id,
-      studentId:    map['studentId']    as String? ?? '',
+      studentId:    map['student_id']    as String? ?? '',
       studentName:  map['studentName']  as String? ?? '',
       totalFees:   (map['totalFees']    as num?)?.toDouble() ?? 0,
       paidAmount:  (map['paidAmount']   as num?)?.toDouble() ?? 0,
-      academicYear:(map['academicYear'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      batchId:      map['batchId']      as String?,
+      academicYear: DateTime.tryParse(map['academicYear']?.toString() ?? '') ?? DateTime.now(),
+      batchId:      map['batch_id']      as String?,
       course:       map['course']       as String?,
-      createdAt:   (map['createdAt']    as Timestamp?)?.toDate() ?? DateTime.now(),
-      updatedAt:   (map['updatedAt']    as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt:   DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.now(),
+      updatedAt:   DateTime.tryParse(map['updated_at']?.toString() ?? '') ?? DateTime.now(),
     );
   }
 
-  factory FeeModel.fromDoc(DocumentSnapshot doc) {
-    return FeeModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-  }
-
   Map<String, dynamic> toMap() => {
-    'studentId':   studentId,
+    'student_id':   studentId,
     'studentName': studentName,
     'totalFees':   totalFees,
     'paidAmount':  paidAmount,
-    'academicYear':Timestamp.fromDate(academicYear),
-    'batchId':     batchId,
+    'academicYear': academicYear.toIso8601String(),
+    'batch_id':     batchId,
     'course':      course,
-    'createdAt':   Timestamp.fromDate(createdAt),
-    'updatedAt':   Timestamp.fromDate(updatedAt),
+    'created_at':   createdAt.toIso8601String(),
+    'updated_at':   updatedAt.toIso8601String(),
   };
 
   @override
@@ -124,27 +119,23 @@ class InstallmentModel extends Equatable {
     return InstallmentModel(
       id:             id,
       feeId:          map['feeId']         as String? ?? '',
-      studentId:      map['studentId']     as String? ?? '',
+      studentId:      map['student_id']     as String? ?? '',
       installmentNo: (map['installmentNo'] as int?) ?? 1,
       amount:        (map['amount']        as num?)?.toDouble() ?? 0,
-      dueDate:       (map['dueDate']       as Timestamp?)?.toDate() ?? DateTime.now(),
-      paidDate:      (map['paidDate']      as Timestamp?)?.toDate(),
+      dueDate:       DateTime.tryParse(map['dueDate']?.toString() ?? '') ?? DateTime.now(),
+      paidDate:      map['paidDate'] != null ? DateTime.tryParse(map['paidDate'].toString()) : null,
       status:         FeeStatusExtension.fromString(map['status'] as String? ?? 'pending'),
       notes:          map['notes']         as String?,
     );
   }
 
-  factory InstallmentModel.fromDoc(DocumentSnapshot doc) {
-    return InstallmentModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-  }
-
   Map<String, dynamic> toMap() => {
     'feeId':         feeId,
-    'studentId':     studentId,
+    'student_id':     studentId,
     'installmentNo': installmentNo,
     'amount':        amount,
-    'dueDate':       Timestamp.fromDate(dueDate),
-    'paidDate':      paidDate != null ? Timestamp.fromDate(paidDate!) : null,
+    'dueDate':       dueDate.toIso8601String(),
+    'paidDate':      paidDate?.toIso8601String(),
     'status':        status.label.toLowerCase(),
     'notes':         notes,
   };

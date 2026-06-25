@@ -97,83 +97,64 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: h * 0.06),
-
-              // ── Branding ────────────────────────────────────────────────
-              Center(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 90, height: 90,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: secondaryColor.withValues(alpha: 0.1),
-                        border: Border.all(color: secondaryColor.withValues(alpha: 0.3), width: 2),
-                        boxShadow: [
-                          BoxShadow(
-                            color: secondaryColor.withValues(alpha: 0.2),
-                            blurRadius: 20, spreadRadius: 2,
+      body: Container(
+        height: h,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFB8B24), Color(0xFFFFF4EB)],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Card ────────────────────────────────────────────────────
+                Container(
+                  margin: const EdgeInsets.only(top: 40),
+                  decoration: BoxDecoration(
+                    color: theme.cardTheme.color ?? Colors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 24, offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/images/logo.png',
+                                height: 120,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Learn Today, Lead Tomorrow',
+                                style: TextStyle(
+                                  color: Color(0xFF0D7377),
+                                  fontSize: 12,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
                           ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(14),
-                      child: Icon(
-                        Icons.school_rounded,
-                        color: secondaryColor, size: 46,
-                      ),
-                    ).animate().fadeIn(duration: 500.ms).scale(begin: const Offset(0.7, 0.7)),
-                    const SizedBox(height: 14),
-                    Text(
-                      AppStrings.appName,
-                      style: theme.textTheme.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1,
-                      ),
-                    ).animate().fadeIn(delay: 200.ms, duration: 500.ms),
-                    const SizedBox(height: 4),
-                    Text(
-                      AppStrings.tagline,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
-                      ),
-                    ).animate().fadeIn(delay: 400.ms, duration: 500.ms),
-                  ],
-                ),
-              ),
-              SizedBox(height: h * 0.05),
-
-              // ── Card ────────────────────────────────────────────────────
-              Container(
-                decoration: BoxDecoration(
-                  color: theme.cardTheme.color,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: theme.dividerColor),
-                  boxShadow: [
-                    BoxShadow(
-                      color: secondaryColor.withValues(alpha: 0.05),
-                      blurRadius: 24, offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(24),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Welcome Back',
-                          style: theme.textTheme.headlineMedium),
-                      const SizedBox(height: 4),
-                      Text('Sign in to continue learning',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-                          )),
+                        ),
+                        
+                            
+                      
                       const SizedBox(height: 24),
 
                       // Role selector
@@ -276,21 +257,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                       
-                      // ── Debug UI Bypass ──────────────────────────────────────────
-                      const SizedBox(height: 32),
-                      Center(
-                        child: Text('Debug: Jump to Dashboards', 
-                          style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5), fontSize: 12)),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          TextButton(onPressed: () => context.push(Routes.studentDashboard), child: const Text('Student')),
-                          TextButton(onPressed: () => context.push(Routes.teacherDashboard), child: const Text('Teacher')),
-                          TextButton(onPressed: () => context.push(Routes.adminDashboard),   child: const Text('Admin')),
-                        ],
-                      ),
+
                     ],
                   ),
                 ),
@@ -301,6 +268,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

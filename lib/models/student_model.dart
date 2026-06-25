@@ -1,5 +1,4 @@
 // lib/models/student_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class StudentModel extends Equatable {
@@ -46,11 +45,11 @@ class StudentModel extends Equatable {
       uid:                uid,
       name:               map['name']               as String? ?? '',
       email:              map['email']              as String? ?? '',
-      studentId:          map['studentId']          as String? ?? '',
+      studentId:          map['student_id']          as String? ?? '',
       phone:              map['phone']              as String?,
-      photoUrl:           map['photoUrl']           as String?,
-      batchId:            map['batchId']            as String?,
-      batchName:          map['batchName']          as String?,
+      photoUrl:           map['photo_url']           as String?,
+      batchId:            map['batch_id']            as String?,
+      batchName:          map['batch_name']          as String?,
       course:             map['course']             as String?,
       address:            map['address']            as String?,
       parentName:         map['parentName']         as String?,
@@ -59,22 +58,18 @@ class StudentModel extends Equatable {
       attendancePercent: (map['attendancePercent'] as num?)?.toDouble() ?? 0.0,
       achievements:      List<String>.from(map['achievements'] as List? ?? []),
       isActive:           map['isActive']           as bool? ?? true,
-      enrolledAt:        (map['enrolledAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      enrolledAt: DateTime.tryParse(map['enrolledAt']?.toString() ?? '') ?? DateTime.now(),
     );
-  }
-
-  factory StudentModel.fromDoc(DocumentSnapshot doc) {
-    return StudentModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
   }
 
   Map<String, dynamic> toMap() => {
     'name':               name,
     'email':              email,
-    'studentId':          studentId,
+    'student_id':          studentId,
     'phone':              phone,
-    'photoUrl':           photoUrl,
-    'batchId':            batchId,
-    'batchName':          batchName,
+    'photo_url':           photoUrl,
+    'batch_id':            batchId,
+    'batch_name':          batchName,
     'course':             course,
     'address':            address,
     'parentName':         parentName,
@@ -83,7 +78,7 @@ class StudentModel extends Equatable {
     'attendancePercent':  attendancePercent,
     'achievements':       achievements,
     'isActive':           isActive,
-    'enrolledAt':         Timestamp.fromDate(enrolledAt),
+    'enrolledAt':         enrolledAt.toIso8601String(),
     'role':               'student',
   };
 

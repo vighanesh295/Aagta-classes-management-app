@@ -1,4 +1,4 @@
-﻿// lib/features/student/screens/student_profile_screen.dart
+// lib/features/student/screens/student_profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +9,6 @@ import '../../../core/constants/app_assets.dart';
 import '../../../core/utils/app_date_utils.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/student_provider.dart';
-import '../../../routes/app_router.dart';
 import '../../../widgets/premium_card.dart';
 
 class StudentProfileScreen extends ConsumerWidget {
@@ -31,12 +30,7 @@ class StudentProfileScreen extends ConsumerWidget {
             icon: const Icon(Icons.arrow_back_ios_rounded),
             onPressed: () => context.pop(),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () => context.push(Routes.settings),
-            ),
-          ],
+          actions: const [],
           flexibleSpace: FlexibleSpaceBar(
             background: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const SizedBox(height: 80),

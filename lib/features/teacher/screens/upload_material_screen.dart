@@ -1,10 +1,10 @@
-﻿// lib/features/teacher/screens/upload_material_screen.dart
+// lib/features/teacher/screens/upload_material_screen.dart
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide MaterialType;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/services/firebase_service.dart';
+import '../../../core/services/supabase_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/utils/validators.dart';
 import '../../../models/study_material_model.dart';
@@ -70,19 +70,19 @@ class _UploadMaterialScreenState extends ConsumerState<UploadMaterialScreen> {
       );
 
       if (url != null) {
-        await FirebaseService.instance.studyMaterials.add(
-          StudyMaterialModel(
-            id:          '',
-            title:       _titleCtrl.text.trim(),
-            subject:     _subjectCtrl.text.trim(),
-            fileUrl:     url,
-            type:        _type,
-            uploadedBy:  user.uid,
-            teacherName: teacher?.name ?? user.name,
-            description: _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
-            uploadedAt:  DateTime.now(),
-          ).toMap(),
-        );
+        final map = StudyMaterialModel(
+          id:          '',
+          title:       _titleCtrl.text.trim(),
+          subject:     _subjectCtrl.text.trim(),
+          fileUrl:     url,
+          type:        _type,
+          uploadedBy:  user.uid,
+          teacherName: teacher?.name ?? user.name,
+          description: _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
+          uploadedAt:  DateTime.now(),
+        ).toMap();
+        map.remove('id');
+        await SupabaseService.instance.client.from('study_materials').insert(map);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Material uploaded!'), backgroundColor: Colors.green),

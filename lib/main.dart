@@ -1,11 +1,10 @@
 // lib/main.dart
-import 'package:firebase_core/firebase_core.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
-import 'firebase_options.dart';
 import 'routes/app_router.dart';
 
 void main() async {
@@ -25,8 +24,11 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Supabase
+  await Supabase.initialize(
+    url: const String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://bjmvphdsgyslyurrvvnc.supabase.co'),
+    publishableKey: const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: 'sb_publishable_LR9ZhHo-yaUTzFy6j50ryA_GSXDOXpy'),
+  );
 
   runApp(const ProviderScope(child: AagteClassesApp()));
 }

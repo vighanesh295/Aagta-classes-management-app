@@ -1,31 +1,32 @@
 // lib/core/services/storage_service.dart
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'supabase_service.dart';
 
 class StorageService {
   StorageService._();
   static final StorageService instance = StorageService._();
 
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final SupabaseStorageClient _storage = SupabaseService.instance.storage;
 
   // ── Upload File ─────────────────────────────────────────────────────────────
   Future<String?> uploadFile({
     required File file,
     required String path,
+    required String bucket,
     ValueChanged<double>? onProgress,
   }) async {
     try {
-      final ref   = _storage.ref(path);
-      final task  = ref.putFile(file);
-
-      task.snapshotEvents.listen((snap) {
-        final progress = snap.bytesTransferred / snap.totalBytes;
-        onProgress?.call(progress);
-      });
-
-      final snapshot = await task;
-      return await snapshot.ref.getDownloadURL();
+      final bytes = await file.readAsBytes();
+      // Supabase storage doesn't support stream progress upload natively in Dart yet
+      // so we simulate or omit it. We just call uploadBinary.
+      await _storage.from(bucket).uploadBinary(
+        path,
+        bytes,
+        fileOptions: const FileOptions(upsert: true),
+      );
+      return _storage.from(bucket).getPublicUrl(path);
     } catch (e) {
       debugPrint('StorageService.uploadFile error: $e');
       return null;
@@ -34,7 +35,7 @@ class StorageService {
 
   // ── Upload Profile Image ────────────────────────────────────────────────────
   Future<String?> uploadProfileImage(File file, String uid) {
-    return uploadFile(file: file, path: 'profiles/$uid/avatar.jpg');
+    return uploadFile(file: file, path: '$uid/avatar.jpg', bucket: 'profile_images');
   }
 
   // ── Upload Study Material ───────────────────────────────────────────────────
@@ -47,28 +48,18 @@ class StorageService {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     return uploadFile(
       file: file,
-      path: 'study_materials/$teacherId/${timestamp}_$fileName',
+      path: '$teacherId/${timestamp}_$fileName',
+      bucket: 'study_materials',
       onProgress: onProgress,
     );
   }
 
   // ── Delete File ─────────────────────────────────────────────────────────────
-  Future<void> deleteFile(String url) async {
+  Future<void> deleteFile(String bucket, String path) async {
     try {
-      final ref = _storage.refFromURL(url);
-      await ref.delete();
+      await _storage.from(bucket).remove([path]);
     } catch (e) {
       debugPrint('StorageService.deleteFile error: $e');
-    }
-  }
-
-  // ── Get Download URL ────────────────────────────────────────────────────────
-  Future<String?> getDownloadUrl(String path) async {
-    try {
-      return await _storage.ref(path).getDownloadURL();
-    } catch (e) {
-      debugPrint('StorageService.getDownloadUrl error: $e');
-      return null;
     }
   }
 }

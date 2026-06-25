@@ -1,5 +1,4 @@
 // lib/models/study_material_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 enum MaterialType { pdf, video, link, image }
@@ -54,29 +53,26 @@ class StudyMaterialModel extends Equatable {
       id:          id,
       title:       map['title']       as String? ?? '',
       subject:     map['subject']     as String? ?? '',
-      fileUrl:     map['fileUrl']     as String? ?? '',
+      fileUrl:     map['file_url']     as String? ?? '',
       type:        MaterialTypeX.fromString(map['type'] as String? ?? 'pdf'),
-      uploadedBy:  map['uploadedBy']  as String? ?? '',
+      uploadedBy:  map['uploaded_by']  as String? ?? '',
       teacherName: map['teacherName'] as String? ?? '',
-      batchId:     map['batchId']     as String?,
+      batchId:     map['batch_id']     as String?,
       description: map['description'] as String?,
-      uploadedAt: (map['uploadedAt']  as Timestamp?)?.toDate() ?? DateTime.now(),
+      uploadedAt: DateTime.tryParse(map['uploadedAt']?.toString() ?? '') ?? DateTime.now(),
     );
   }
-
-  factory StudyMaterialModel.fromDoc(DocumentSnapshot doc) =>
-      StudyMaterialModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
 
   Map<String, dynamic> toMap() => {
     'title':       title,
     'subject':     subject,
-    'fileUrl':     fileUrl,
+    'file_url':     fileUrl,
     'type':        type.label.toLowerCase(),
-    'uploadedBy':  uploadedBy,
+    'uploaded_by':  uploadedBy,
     'teacherName': teacherName,
-    'batchId':     batchId,
+    'batch_id':     batchId,
     'description': description,
-    'uploadedAt':  Timestamp.fromDate(uploadedAt),
+    'uploadedAt':  uploadedAt.toIso8601String(),
   };
 
   @override

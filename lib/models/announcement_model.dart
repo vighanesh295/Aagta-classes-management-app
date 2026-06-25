@@ -1,5 +1,4 @@
 // lib/models/announcement_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class AnnouncementModel extends Equatable {
@@ -26,23 +25,20 @@ class AnnouncementModel extends Equatable {
       id:         id,
       title:      map['title']      as String? ?? '',
       content:    map['content']    as String? ?? '',
-      createdBy:  map['createdBy']  as String? ?? '',
+      createdBy:  map['created_by']  as String? ?? '',
       targetRole: map['targetRole'] as String?,
       isPinned:   map['isPinned']   as bool? ?? false,
-      createdAt: (map['createdAt']  as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt: DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.now(),
     );
   }
-
-  factory AnnouncementModel.fromDoc(DocumentSnapshot doc) =>
-      AnnouncementModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
 
   Map<String, dynamic> toMap() => {
     'title':      title,
     'content':    content,
-    'createdBy':  createdBy,
+    'created_by':  createdBy,
     'targetRole': targetRole,
     'isPinned':   isPinned,
-    'createdAt':  Timestamp.fromDate(createdAt),
+    'created_at':  createdAt.toIso8601String(),
   };
 
   @override
