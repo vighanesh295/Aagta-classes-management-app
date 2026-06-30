@@ -196,7 +196,7 @@ class AuthNotifier extends StateNotifier<AppAuthState> {
         return user;
       } catch (e) {
         debugPrint('Auth.signUp database error: $e');
-        state = state.copyWith(isLoading: false, error: 'Database error. Try again.');
+        state = state.copyWith(isLoading: false, error: 'DB Error: $e');
         return null;
       }
     } on AuthException catch (e) {

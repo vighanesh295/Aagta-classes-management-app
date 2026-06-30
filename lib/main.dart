@@ -30,18 +30,18 @@ void main() async {
     publishableKey: const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: 'sb_publishable_LR9ZhHo-yaUTzFy6j50ryA_GSXDOXpy'),
   );
 
-  runApp(const ProviderScope(child: AagteClassesApp()));
+  runApp(const ProviderScope(child: AgateClassesApp()));
 }
 
-class AagteClassesApp extends ConsumerWidget {
-  const AagteClassesApp({super.key});
+class AgateClassesApp extends ConsumerWidget {
+  const AgateClassesApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'Aagte Classes',
+      title: 'Agate Classes',
       debugShowCheckedModeBanner: false,
       theme:      AppTheme.light,
       darkTheme:  AppTheme.dark,

@@ -80,10 +80,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           state.matchedLocation == Routes.splash;
 
       if (!isAuth && !isOnAuth) {
-        // In debug mode, allow bypassing auth to test dashboards directly
-        if (kDebugMode && state.matchedLocation != Routes.splash) {
-          return null; 
-        }
         return Routes.login;
       }
 

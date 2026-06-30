@@ -4,7 +4,7 @@ class AppStrings {
   AppStrings._();
 
   // App
-  static const String appName     = 'Aagte Classes';
+  static const String appName     = 'Agate Classes';
   static const String tagline     = 'Learn Today, Lead Tomorrow';
   static const String appVersion  = 'v1.0.0';
 
