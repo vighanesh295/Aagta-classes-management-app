@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../providers/auth_provider.dart';
 import '../../../routes/app_router.dart';
@@ -127,7 +128,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                           const SizedBox(height: 18),
 
                           // ── 3. Analytics Overview ───────────────────────
-                          const _SectionHeader(title: 'Analytics Overview', actionText: 'See all →'),
+                          _SectionHeader(title: 'Analytics Overview', actionText: 'See all →', onActionTap: () => context.push(Routes.analytics)),
                           const SizedBox(height: 12),
                           const _AnalyticsBanner(),
 
@@ -141,7 +142,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                           const SizedBox(height: 18),
 
                           // ── 5. Recent Activity ──────────────────────────
-                          const _SectionHeader(title: 'Recent Activity', actionText: 'View all →'),
+                          _SectionHeader(title: 'Recent Activity', actionText: 'View all →', onActionTap: () {}),
                           const SizedBox(height: 12),
                           const _RecentActivityList(),
 
@@ -316,13 +317,13 @@ class _WelcomeHeroCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 // Bottom Row Stats
-                const Row(
+                Row(
                   children: [
-                    Expanded(child: _HeroStatChip(number: '248', label: 'STUDENTS')),
-                    SizedBox(width: 8),
-                    Expanded(child: _HeroStatChip(number: '18', label: 'TEACHERS')),
-                    SizedBox(width: 8),
-                    Expanded(child: _HeroStatChip(number: '6', label: 'BATCHES')),
+                    const Expanded(child: _HeroStatChip(number: '248', label: 'STUDENTS')),
+                    const SizedBox(width: 8),
+                    const Expanded(child: _HeroStatChip(number: '18', label: 'TEACHERS')),
+                    const SizedBox(width: 8),
+                    Expanded(child: _HeroStatChip(number: '6', label: 'BATCHES', onTap: () => context.push(Routes.batchManagement))),
                   ],
                 )
               ],
@@ -337,12 +338,13 @@ class _WelcomeHeroCard extends StatelessWidget {
 class _HeroStatChip extends StatelessWidget {
   final String number;
   final String label;
+  final VoidCallback? onTap;
 
-  const _HeroStatChip({required this.number, required this.label});
+  const _HeroStatChip({required this.number, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget child = Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.15),
@@ -357,14 +359,20 @@ class _HeroStatChip extends StatelessWidget {
         ],
       ),
     );
+
+    if (onTap != null) {
+      child = GestureDetector(onTap: onTap, behavior: HitTestBehavior.opaque, child: child);
+    }
+    return child;
   }
 }
 
 class _SectionHeader extends StatelessWidget {
   final String title;
   final String? actionText;
+  final VoidCallback? onActionTap;
 
-  const _SectionHeader({required this.title, this.actionText});
+  const _SectionHeader({required this.title, this.actionText, this.onActionTap});
 
   @override
   Widget build(BuildContext context) {
@@ -379,7 +387,10 @@ class _SectionHeader extends StatelessWidget {
           ],
         ),
         if (actionText != null)
-          Text(actionText!, style: GoogleFonts.nunito(color: _orangePrimary, fontSize: 13, fontWeight: FontWeight.w700)),
+          GestureDetector(
+            onTap: onActionTap,
+            child: Text(actionText!, style: GoogleFonts.nunito(color: _orangePrimary, fontSize: 13, fontWeight: FontWeight.w700)),
+          ),
       ],
     );
   }
@@ -649,7 +660,9 @@ class _AdminDrawer extends ConsumerWidget {
   const _AdminDrawer({this.name});
   
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Drawer(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider).valueOrNull;
+    return Drawer(
     backgroundColor: Colors.white,
     child: Column(children: [
       DrawerHeader(
@@ -663,8 +676,12 @@ class _AdminDrawer extends ConsumerWidget {
             width: 64, height: 64,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
-            child: const Icon(Icons.admin_panel_settings_rounded,
-                color: Colors.white, size: 32),
+            child: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                ? CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: CachedNetworkImageProvider(user.photoUrl!),
+                  )
+                : const Icon(Icons.admin_panel_settings_rounded, color: Colors.white, size: 32),
           ),
           const SizedBox(width: 12),
           Expanded(child: Column(
@@ -683,8 +700,9 @@ class _AdminDrawer extends ConsumerWidget {
       _DItem(Icons.person_rounded,              'Teachers',       () => context.push(Routes.manageTeachers)),
       _DItem(Icons.account_balance_wallet_rounded,'Fee Management',() => context.push(Routes.manageFees)),
       _DItem(Icons.bar_chart_rounded,           'Analytics',      () => context.push(Routes.analytics)),
-      _DItem(Icons.groups_rounded,              'Batches',        () => context.push(Routes.batchManagement)),
+      _DItem(Icons.group_work_outlined,         'Manage Batches', () => context.push(Routes.batchManagement)),
       _DItem(Icons.campaign_rounded,            'Announcements',  () => context.push(Routes.announcements)),
+      _DItem(Icons.menu_book_rounded,           'Study Materials',() => context.push(Routes.studyMaterial)),
       const Divider(),
       _DItem(Icons.logout_rounded,              'Logout',         () {
         ref.read(authNotifierProvider.notifier).signOut();
@@ -692,6 +710,7 @@ class _AdminDrawer extends ConsumerWidget {
       }),
     ]),
   );
+  }
 }
 
 class _DItem extends StatelessWidget {

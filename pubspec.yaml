@@ -13,6 +13,8 @@ dependencies:
   # Supabase Backend
   supabase_flutter: ^2.5.4
   flutter_local_notifications: ^17.2.2
+  firebase_messaging: ^14.9.4
+  firebase_core: ^2.27.1
 
   # State Management
   flutter_riverpod: ^2.5.1
@@ -46,6 +48,13 @@ dependencies:
   flutter_plugin_android_lifecycle: ">=2.0.0 <2.0.24"
 
   cupertino_icons: ^1.0.6
+  open_filex: ^4.7.0
+  path_provider: ^2.1.6
+  dio: ^5.10.0
+  mime: ^2.0.0
+  excel: ^4.0.2
+  printing: ^5.12.0
+  pdf: ^3.11.1
 
 dev_dependencies:
   flutter_test:

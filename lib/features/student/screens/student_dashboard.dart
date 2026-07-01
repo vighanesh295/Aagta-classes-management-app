@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_assets.dart';
@@ -123,7 +124,6 @@ class _HomeTab extends ConsumerWidget {
             icon: const Icon(Icons.menu_rounded, color: Colors.white),
             onPressed: () => scaffoldKey.currentState?.openDrawer(),
           ),
-          title: Image.asset(AppAssets.logo, height: 36, fit: BoxFit.contain),
           flexibleSpace: FlexibleSpaceBar(
             background: Container(
               decoration: const BoxDecoration(
@@ -159,7 +159,7 @@ class _HomeTab extends ConsumerWidget {
                           radius: 28,
                           backgroundColor: Colors.white.withValues(alpha: 0.2),
                           backgroundImage: student?.photoUrl != null
-                              ? NetworkImage(student!.photoUrl!) : null,
+                              ? CachedNetworkImageProvider(student!.photoUrl!) : null,
                           child: student?.photoUrl == null
                               ? Text((user?.name ?? 'S')[0].toUpperCase(),
                                   style: const TextStyle(fontSize: 20,
@@ -588,7 +588,7 @@ class _AnnouncementTile extends StatelessWidget {
         Text(ann.title,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
         const SizedBox(height: 4),
-        Text(ann.content, maxLines: 2, overflow: TextOverflow.ellipsis,
+        Text(ann.body, maxLines: 2, overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6) ?? Colors.grey)),
         const SizedBox(height: 6),
         Text(AppDateUtils.relativeTime(ann.createdAt),
@@ -603,7 +603,9 @@ class _StudentDrawer extends ConsumerWidget {
   const _StudentDrawer({this.name});
   
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Drawer(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider).valueOrNull;
+    return Drawer(
     backgroundColor: Colors.white,
     child: Column(children: [
       DrawerHeader(
@@ -617,8 +619,12 @@ class _StudentDrawer extends ConsumerWidget {
             width: 64, height: 64,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
-            child: const Icon(Icons.person_rounded,
-                color: Colors.white, size: 32),
+            child: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                ? CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: CachedNetworkImageProvider(user.photoUrl!),
+                  )
+                : const Icon(Icons.person_rounded, color: Colors.white, size: 32),
           ),
           const SizedBox(width: 12),
           Expanded(child: Column(
@@ -646,6 +652,7 @@ class _StudentDrawer extends ConsumerWidget {
       }),
     ]),
   );
+  }
 }
 
 class _DItem extends StatelessWidget {

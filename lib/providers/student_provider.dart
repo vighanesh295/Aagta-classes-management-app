@@ -97,13 +97,13 @@ final studyMaterialsProvider = StreamProvider.family<List<StudyMaterialModel>, S
         .eq('batch_id', batchId)
         .order('uploadedAt', ascending: false)
         .limit(50)
-        .map((rows) => rows.map((row) => StudyMaterialModel.fromMap(row, row['id'])).toList());
+        .map((rows) => rows.map((row) => StudyMaterialModel.fromMap(row)).toList());
   }
   
   return stream
       .order('uploadedAt', ascending: false)
       .limit(50)
-      .map((rows) => rows.map((row) => StudyMaterialModel.fromMap(row, row['id'])).toList());
+      .map((rows) => rows.map((row) => StudyMaterialModel.fromMap(row)).toList());
 });
 
 // ── Notifications ──────────────────────────────────────────────────────────
@@ -120,7 +120,7 @@ final studentNotificationsProvider = StreamProvider<List<NotificationModel>>((re
           .eq('targetUid', user.uid) // Simplified for realtime constraint, ideally uses postgres RLS
           .order('created_at', ascending: false)
           .limit(30)
-          .map((rows) => rows.map((row) => NotificationModel.fromMap(row, row['id'])).toList());
+          .map((rows) => rows.map((row) => NotificationModel.fromMap(row)).toList());
     },
     loading: () => Stream.value([]),
     error:   (_, __) => Stream.value([]),
@@ -153,7 +153,7 @@ final announcementsProvider = StreamProvider<List<AnnouncementModel>>((ref) {
       .order('isPinned', ascending: false)
       .order('created_at', ascending: false)
       .limit(20)
-      .map((rows) => rows.map((row) => AnnouncementModel.fromMap(row, row['id'])).toList());
+      .map((rows) => rows.map((row) => AnnouncementModel.fromMap(row)).toList());
 });
 
 // ── All Students (admin use) ───────────────────────────────────────────────

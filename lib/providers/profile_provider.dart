@@ -42,7 +42,8 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
             fileOptions: const FileOptions(contentType: 'image/jpeg', upsert: true),
           );
           
-          photoUrl = storage.getPublicUrl(fileName);
+          final ts = DateTime.now().millisecondsSinceEpoch;
+          photoUrl = '${storage.getPublicUrl(fileName)}?t=$ts';
         } catch (e) {
           throw Exception('Image upload failed: $e');
         }

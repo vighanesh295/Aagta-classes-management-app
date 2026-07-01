@@ -141,5 +141,5 @@ final allAnnouncementsProvider = StreamProvider<List<AnnouncementModel>>((ref) {
       .from('announcements')
       .stream(primaryKey: ['id'])
       .order('created_at', ascending: false)
-      .map((rows) => rows.map((row) => AnnouncementModel.fromMap(row, row['id'])).toList());
+      .map((rows) => rows.map((row) => AnnouncementModel.fromMap(row)).toList());
 });

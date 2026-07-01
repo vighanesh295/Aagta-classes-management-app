@@ -104,18 +104,13 @@ class AuthNotifier extends StateNotifier<AppAuthState> {
           await prefs.setString('saved_role',  expectedRole.name);
         }
 
-        // Save FCM token
-        try {
-          await NotificationService.instance.saveTokenToFirestore(uid);
-        } catch (e) {
-          debugPrint('Warning: failed to save FCM token: $e');
-        }
+        // FCM token handled elsewhere.
 
         // Check installment reminders
         if (user.role == UserRole.student) {
           try {
-            await NotificationService.instance
-                .checkAndScheduleInstallmentReminders(uid);
+            // TODO: migrate to new fee reminder system if needed
+            // await NotificationService.instance.checkAndScheduleInstallmentReminders(uid);
           } catch (e) {
             debugPrint('Warning: failed to schedule installment reminders: $e');
           }
@@ -187,7 +182,8 @@ class AuthNotifier extends StateNotifier<AppAuthState> {
         }
 
         try {
-          await NotificationService.instance.saveTokenToFirestore(uid);
+          // Push token saving is handled centrally now
+          // await NotificationService.instance.saveTokenToFirestore(uid);
         } catch (e) {
           debugPrint('Warning: failed to save FCM token (signUp): $e');
         }

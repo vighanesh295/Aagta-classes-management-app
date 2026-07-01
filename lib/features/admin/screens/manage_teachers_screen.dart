@@ -1,7 +1,8 @@
-﻿// lib/features/admin/screens/manage_teachers_screen.dart
+// lib/features/admin/screens/manage_teachers_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../models/teacher_model.dart';
 import '../../../providers/teacher_provider.dart';
@@ -91,7 +92,7 @@ class _TeacherTile extends StatelessWidget {
       CircleAvatar(
         radius: 22,
         backgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
-        backgroundImage: teacher.photoUrl != null ? NetworkImage(teacher.photoUrl!) : null,
+        backgroundImage: teacher.photoUrl != null ? CachedNetworkImageProvider(teacher.photoUrl!) : null,
         child: teacher.photoUrl == null
             ? Text(teacher.name[0].toUpperCase(),
                 style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w800))

@@ -80,7 +80,7 @@ final teacherMaterialsProvider = StreamProvider<List<StudyMaterialModel>>((ref) 
           .stream(primaryKey: ['id'])
           .eq('uploaded_by', user.uid)
           .order('uploadedAt', ascending: false)
-          .map((rows) => rows.map((row) => StudyMaterialModel.fromMap(row, row['id'])).toList());
+          .map((rows) => rows.map((row) => StudyMaterialModel.fromMap(row)).toList());
     },
     loading: () => Stream.value([]),
     error:   (_, __) => Stream.value([]),

@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/constants/app_assets.dart';
 import '../../../core/utils/app_date_utils.dart';
@@ -51,7 +52,7 @@ class StudentProfileScreen extends ConsumerWidget {
                     radius: 44,
                     backgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
                     backgroundImage: student?.photoUrl != null
-                        ? NetworkImage(student!.photoUrl!) : null,
+                        ? CachedNetworkImageProvider(student!.photoUrl!) : null,
                     child: student?.photoUrl == null
                         ? Text((user?.name ?? 'S')[0].toUpperCase(),
                             style: TextStyle(fontSize: 32,

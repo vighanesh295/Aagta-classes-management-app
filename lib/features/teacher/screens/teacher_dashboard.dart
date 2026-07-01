@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/app_date_utils.dart';
@@ -181,8 +182,8 @@ class _TeacherDashboardState extends ConsumerState<TeacherDashboard> {
                       isActive: true, bg: AppColors.teacherPrimary, iconColor: Colors.white, delay: 200, onTap: () => context.push(Routes.lectureSchedule),
                     ),
                     _QuickAccessCard(
-                      title: 'Upload\nNotes', icon: Icons.upload_file_rounded,
-                      isActive: false, bg: AppColors.teacherGreenPale, iconColor: AppColors.teacherGreenIcon, delay: 250, onTap: () => context.push(Routes.uploadMaterial),
+                      title: 'Study\nMaterials', icon: Icons.menu_book_rounded,
+                      isActive: false, bg: AppColors.teacherGreenPale, iconColor: AppColors.teacherGreenIcon, delay: 250, onTap: () => context.push(Routes.studyMaterial),
                     ),
                     _QuickAccessCard(
                       title: 'Attendance', icon: Icons.fact_check_rounded,
@@ -589,7 +590,9 @@ class _TeacherDrawer extends ConsumerWidget {
   final String? name;
   const _TeacherDrawer({this.name});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Drawer(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider).valueOrNull;
+    return Drawer(
     child: Column(children: [
       DrawerHeader(
         decoration: const BoxDecoration(
@@ -600,9 +603,14 @@ class _TeacherDrawer extends ConsumerWidget {
         child: Row(children: [
           CircleAvatar(
             radius: 32, backgroundColor: Colors.white.withValues(alpha: 0.3),
-            child: Text((name ?? 'T')[0].toUpperCase(),
-                style: const TextStyle(fontSize: 24,
-                    fontWeight: FontWeight.w800, color: Colors.white, fontFamily: 'Playfair Display')),
+            backgroundImage: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                ? CachedNetworkImageProvider(user.photoUrl!)
+                : null,
+            child: user?.photoUrl == null || user!.photoUrl!.isEmpty
+                ? Text((name ?? 'T')[0].toUpperCase(),
+                    style: const TextStyle(fontSize: 24,
+                        fontWeight: FontWeight.w800, color: Colors.white, fontFamily: 'Playfair Display'))
+                : null,
           ),
           const SizedBox(width: 12),
           Expanded(child: Column(
@@ -619,10 +627,11 @@ class _TeacherDrawer extends ConsumerWidget {
       ),
       _DrawerItem(Icons.dashboard_rounded,        'Dashboard',  () => context.go(Routes.teacherDashboard)),
       _DrawerItem(Icons.event_note_rounded,       'Schedule',   () => context.push(Routes.lectureSchedule)),
-      _DrawerItem(Icons.upload_file_rounded,      'Upload Material', () => context.push(Routes.uploadMaterial)),
+      _DrawerItem(Icons.menu_book_rounded,      'Study Materials', () => context.push(Routes.studyMaterial)),
       _DrawerItem(Icons.fact_check_rounded,       'Attendance', () => context.push(Routes.markAttendance)),
       _DrawerItem(Icons.assignment_rounded,       'Homework',   () => context.push(Routes.homework)),
       _DrawerItem(Icons.notifications_outlined,   'Notifications', () => context.push(Routes.notifications)),
+      _DrawerItem(Icons.campaign_outlined,        'Announcements', () => context.push(Routes.announcements)),
       const Divider(),
       _DrawerItem(Icons.logout_rounded,           'Logout',     () {
         ref.read(authNotifierProvider.notifier).signOut();
@@ -630,6 +639,7 @@ class _TeacherDrawer extends ConsumerWidget {
       }),
     ]),
   );
+  }
 }
 
 class _DrawerItem extends StatelessWidget {

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../providers/auth_provider.dart';
 import '../../../providers/student_provider.dart';
@@ -173,7 +174,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           backgroundImage: _selectedImage != null
                               ? FileImage(_selectedImage!) as ImageProvider
                               : (user.photoUrl != null && user.photoUrl!.isNotEmpty
-                                  ? NetworkImage(user.photoUrl!)
+                                  ? CachedNetworkImageProvider(user.photoUrl!)
                                   : null),
                           child: _selectedImage == null && (user.photoUrl == null || user.photoUrl!.isEmpty)
                               ? const Icon(Icons.person, size: 52, color: Colors.white)

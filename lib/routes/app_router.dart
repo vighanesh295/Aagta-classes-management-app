@@ -14,21 +14,22 @@ import '../features/student/screens/student_dashboard.dart';
 import '../features/student/screens/student_profile_screen.dart';
 import '../features/student/screens/fee_details_screen.dart';
 import '../features/student/screens/attendance_screen.dart';
-import '../features/student/screens/study_material_screen.dart';
+import '../features/common/screens/study_materials_screen.dart';
 import '../features/student/screens/results_screen.dart';
-import '../features/student/screens/notifications_screen.dart';
+import '../features/common/screens/notifications_screen.dart';
 import '../features/teacher/screens/teacher_dashboard.dart';
 import '../features/teacher/screens/lecture_schedule_screen.dart';
-import '../features/teacher/screens/upload_material_screen.dart';
 import '../features/teacher/screens/student_attendance_screen.dart';
 import '../features/teacher/screens/homework_screen.dart';
 import '../features/admin/screens/admin_dashboard.dart';
-import '../features/admin/screens/manage_students_screen.dart';
+import '../features/admin/screens/student_management_screen.dart';
+import '../features/admin/screens/student_detail_screen.dart';
 import '../features/admin/screens/manage_teachers_screen.dart';
 import '../features/admin/screens/fee_management_screen.dart';
 import '../features/admin/screens/analytics_screen.dart';
 import '../features/admin/screens/batch_management_screen.dart';
-import '../features/admin/screens/announcements_screen.dart';
+import '../features/admin/screens/batch_detail_screen.dart';
+import '../features/common/screens/announcements_screen.dart';
 import '../features/common/screens/profile_screen.dart';
 
 // ── Route names ────────────────────────────────────────────────────────────
@@ -42,22 +43,23 @@ class Routes {
   static const studentProfile   = '/student/profile';
   static const feeDetails       = '/student/fees';
   static const attendance       = '/student/attendance';
-  static const studyMaterial    = '/student/materials';
+  static const studyMaterial    = '/study-materials';
   static const results          = '/student/results';
   static const notifications    = '/student/notifications';
 
   static const teacherDashboard = '/teacher';
   static const lectureSchedule  = '/teacher/schedule';
-  static const uploadMaterial   = '/teacher/upload';
   static const markAttendance   = '/teacher/attendance';
   static const homework         = '/teacher/homework';
 
   static const adminDashboard   = '/admin';
   static const manageStudents   = '/admin/students';
+  static const studentDetail    = '/admin/students/:id';
   static const manageTeachers   = '/admin/teachers';
   static const manageFees       = '/admin/fees';
   static const analytics        = '/admin/analytics';
   static const batchManagement  = '/admin/batches';
+  static const batchDetail      = '/admin/batches/:id';
   static const announcements    = '/admin/announcements';
 
   static const profile          = '/profile';
@@ -103,27 +105,41 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.studentProfile,   builder: (_, __) => const StudentProfileScreen()),
       GoRoute(path: Routes.feeDetails,       builder: (_, __) => const FeeDetailsScreen()),
       GoRoute(path: Routes.attendance,       builder: (_, __) => const AttendanceScreen()),
-      GoRoute(path: Routes.studyMaterial,    builder: (_, __) => const StudyMaterialScreen()),
+
       GoRoute(path: Routes.results,          builder: (_, __) => const ResultsScreen()),
       GoRoute(path: Routes.notifications,    builder: (_, __) => const NotificationsScreen()),
 
       // Teacher routes
       GoRoute(path: Routes.teacherDashboard, builder: (_, __) => Theme(data: AppTheme.teacherLight, child: const TeacherDashboard())),
       GoRoute(path: Routes.lectureSchedule,  builder: (_, __) => Theme(data: AppTheme.teacherLight, child: const LectureScheduleScreen())),
-      GoRoute(path: Routes.uploadMaterial,   builder: (_, __) => Theme(data: AppTheme.teacherLight, child: const UploadMaterialScreen())),
       GoRoute(path: Routes.markAttendance,   builder: (_, __) => Theme(data: AppTheme.teacherLight, child: const StudentAttendanceScreen())),
       GoRoute(path: Routes.homework,         builder: (_, __) => Theme(data: AppTheme.teacherLight, child: const HomeworkScreen())),
 
       // Admin routes
       GoRoute(path: Routes.adminDashboard,  builder: (_, __) => Theme(data: AppTheme.adminLight, child: const AdminDashboard())),
-      GoRoute(path: Routes.manageStudents,  builder: (_, __) => Theme(data: AppTheme.adminLight, child: const ManageStudentsScreen())),
+      GoRoute(path: Routes.manageStudents,  builder: (_, __) => Theme(data: AppTheme.adminLight, child: const StudentManagementScreen())),
+      GoRoute(
+        path: Routes.studentDetail,
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return Theme(data: AppTheme.adminLight, child: StudentDetailScreen(studentId: id));
+        },
+      ),
       GoRoute(path: Routes.manageTeachers,  builder: (_, __) => Theme(data: AppTheme.adminLight, child: const ManageTeachersScreen())),
       GoRoute(path: Routes.manageFees,      builder: (_, __) => Theme(data: AppTheme.adminLight, child: const FeeManagementScreen())),
       GoRoute(path: Routes.analytics,       builder: (_, __) => Theme(data: AppTheme.adminLight, child: const AnalyticsScreen())),
       GoRoute(path: Routes.batchManagement, builder: (_, __) => Theme(data: AppTheme.adminLight, child: const BatchManagementScreen())),
-      GoRoute(path: Routes.announcements,   builder: (_, __) => Theme(data: AppTheme.adminLight, child: const AdminAnnouncementsScreen())),
+      GoRoute(
+        path: Routes.batchDetail,
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return Theme(data: AppTheme.adminLight, child: BatchDetailScreen(batchId: id));
+        },
+      ),
+      GoRoute(path: Routes.announcements,   builder: (_, __) => Theme(data: AppTheme.adminLight, child: const AnnouncementsScreen())),
 
       // Common
+      GoRoute(path: Routes.studyMaterial, builder: (_, __) => const StudyMaterialsScreen()),
       GoRoute(path: Routes.profile,  builder: (_, __) => const ProfileScreen()),
     ],
     errorBuilder: (context, state) => Scaffold(

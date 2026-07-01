@@ -29,6 +29,7 @@ class UserModel extends Equatable {
   final String?  photoUrl;
   final String?  phone;
   final String?  fcmToken;
+  final String?  batch;
   final bool     isActive;
   final DateTime createdAt;
 
@@ -40,6 +41,7 @@ class UserModel extends Equatable {
     this.photoUrl,
     this.phone,
     this.fcmToken,
+    this.batch,
     this.isActive = true,
     required this.createdAt,
   });
@@ -53,6 +55,7 @@ class UserModel extends Equatable {
       photoUrl:  map['photo_url'] as String?,
       phone:     map['phone']    as String?,
       fcmToken:  map['fcmToken'] as String?,
+      batch:     map['batch']    as String?,
       isActive:  map['isActive'] as bool? ?? true,
       createdAt: DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.now(),
     );
@@ -65,6 +68,7 @@ class UserModel extends Equatable {
     'photo_url':  photoUrl,
     'phone':     phone,
     'fcmToken':  fcmToken,
+    'batch':     batch,
     'isActive':  isActive,
     'created_at': createdAt.toIso8601String(),
   };
@@ -74,6 +78,7 @@ class UserModel extends Equatable {
     String?   photoUrl,
     String?   phone,
     String?   fcmToken,
+    String?   batch,
     bool?     isActive,
   }) => UserModel(
     uid:       uid,
@@ -83,6 +88,7 @@ class UserModel extends Equatable {
     photoUrl:  photoUrl  ?? this.photoUrl,
     phone:     phone     ?? this.phone,
     fcmToken:  fcmToken  ?? this.fcmToken,
+    batch:     batch     ?? this.batch,
     isActive:  isActive  ?? this.isActive,
     createdAt: createdAt,
   );
