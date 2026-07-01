@@ -17,7 +17,7 @@ final currentTeacherProvider = StreamProvider<TeacherModel?>((ref) {
           .from('teachers')
           .stream(primaryKey: ['id'])
           .eq('id', user.uid)
-          .map((rows) => rows.isNotEmpty ? TeacherModel.fromMap(rows.first, user.uid) : null);
+          .map((rows) => rows.isNotEmpty ? TeacherModel.fromMap(rows.first) : null);
     },
     loading: () => Stream.value(null),
     error:   (_, __) => Stream.value(null),
@@ -87,14 +87,7 @@ final teacherMaterialsProvider = StreamProvider<List<StudyMaterialModel>>((ref) 
   );
 });
 
-// ── All Teachers (admin use) ──────────────────────────────────────────────────
-final allTeachersProvider = StreamProvider<List<TeacherModel>>((ref) {
-  return SupabaseService.instance.client
-      .from('teachers')
-      .stream(primaryKey: ['id'])
-      .order('name', ascending: true)
-      .map((rows) => rows.map((row) => TeacherModel.fromMap(row, row['id'])).toList());
-});
+
 
 // ── Attendance for a lecture ──────────────────────────────────────────────────
 final lectureAttendanceProvider = StreamProvider.family<List<AttendanceModel>, String>((ref, lectureId) {

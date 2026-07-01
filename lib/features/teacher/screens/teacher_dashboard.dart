@@ -164,7 +164,7 @@ class _TeacherDashboardState extends ConsumerState<TeacherDashboard> {
                     )),
                     const SizedBox(width: 10),
                     Expanded(child: _TeacherStatCard(
-                      label: 'Batches', value: '${teacher?.batches.length ?? 0}',
+                      label: 'Batches', value: '${teacher?.assignedBatches.length ?? 0}',
                       icon: Icons.groups_rounded, iconBg: AppColors.teacherGreenPale, iconColor: AppColors.teacherGreenIcon, delay: 150,
                     )),
                   ],

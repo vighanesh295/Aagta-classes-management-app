@@ -280,7 +280,7 @@ class _AddEditStudentSheetState extends ConsumerState<AddEditStudentSheet> with 
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: _selectedBatch,
+            initialValue: _selectedBatch,
             decoration: const InputDecoration(labelText: 'Batch *', border: OutlineInputBorder()),
             items: batchesAsync.when(
               data: (batches) => batches.map((b) => DropdownMenuItem(value: b.name, child: Text(b.name))).toList(),

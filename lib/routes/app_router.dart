@@ -24,7 +24,8 @@ import '../features/teacher/screens/homework_screen.dart';
 import '../features/admin/screens/admin_dashboard.dart';
 import '../features/admin/screens/student_management_screen.dart';
 import '../features/admin/screens/student_detail_screen.dart';
-import '../features/admin/screens/manage_teachers_screen.dart';
+import '../features/admin/screens/teacher_management_screen.dart';
+import '../features/admin/screens/teacher_detail_screen.dart';
 import '../features/admin/screens/fee_management_screen.dart';
 import '../features/admin/screens/analytics_screen.dart';
 import '../features/admin/screens/batch_management_screen.dart';
@@ -56,6 +57,7 @@ class Routes {
   static const manageStudents   = '/admin/students';
   static const studentDetail    = '/admin/students/:id';
   static const manageTeachers   = '/admin/teachers';
+  static const teacherDetail    = '/admin/teachers/:id';
   static const manageFees       = '/admin/fees';
   static const analytics        = '/admin/analytics';
   static const batchManagement  = '/admin/batches';
@@ -125,7 +127,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           return Theme(data: AppTheme.adminLight, child: StudentDetailScreen(studentId: id));
         },
       ),
-      GoRoute(path: Routes.manageTeachers,  builder: (_, __) => Theme(data: AppTheme.adminLight, child: const ManageTeachersScreen())),
+      GoRoute(path: Routes.manageTeachers,  builder: (_, __) => Theme(data: AppTheme.adminLight, child: const TeacherManagementScreen())),
+      GoRoute(
+        path: Routes.teacherDetail,
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return Theme(data: AppTheme.adminLight, child: TeacherDetailScreen(teacherId: id));
+        },
+      ),
       GoRoute(path: Routes.manageFees,      builder: (_, __) => Theme(data: AppTheme.adminLight, child: const FeeManagementScreen())),
       GoRoute(path: Routes.analytics,       builder: (_, __) => Theme(data: AppTheme.adminLight, child: const AnalyticsScreen())),
       GoRoute(path: Routes.batchManagement, builder: (_, __) => Theme(data: AppTheme.adminLight, child: const BatchManagementScreen())),

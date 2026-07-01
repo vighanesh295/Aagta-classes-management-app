@@ -71,8 +71,8 @@ class AdminNotifier extends StateNotifier<AdminState> {
   Future<void> createTeacher(TeacherModel teacher) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _supabase.setDoc('teachers', teacher.uid, teacher.toMap());
-      await _supabase.setDoc('users', teacher.uid, teacher.toMap());
+      await _supabase.setDoc('teachers', teacher.id, teacher.toMap());
+      await _supabase.setDoc('users', teacher.id, teacher.toMap());
       state = state.copyWith(isLoading: false, success: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());

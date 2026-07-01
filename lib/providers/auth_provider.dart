@@ -173,10 +173,10 @@ class AuthNotifier extends StateNotifier<AppAuthState> {
           await _supabase.setDoc('students', uid, student.toMap());
         } else if (role == UserRole.teacher) {
           final teacher = TeacherModel(
-            uid: uid,
+            id: uid,
             name: name.trim(),
             email: email.trim(),
-            joinedAt: DateTime.now(),
+            joiningDate: DateTime.now(),
           );
           await _supabase.setDoc('teachers', uid, teacher.toMap());
         }

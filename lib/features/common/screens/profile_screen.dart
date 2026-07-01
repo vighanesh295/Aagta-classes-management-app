@@ -135,7 +135,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         _batchCtrl.text = student?.batchName ?? '';
       } else if (isTeacher) {
         final teacher = ref.read(currentTeacherProvider).valueOrNull;
-        _batchCtrl.text = teacher?.batches.join(', ') ?? '';
+        _batchCtrl.text = teacher?.assignedBatches.join(', ') ?? '';
       }
       _initialized = true;
     }

@@ -283,11 +283,11 @@ class _AddEditBatchSheetState extends ConsumerState<AddEditBatchSheet> with Sing
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: _selectedTeacherId,
+            initialValue: _selectedTeacherId,
             decoration: const InputDecoration(labelText: 'Assign Teacher', border: OutlineInputBorder()),
             items: [
               const DropdownMenuItem(value: null, child: Text('None')),
-              ..._teachers.map((t) => DropdownMenuItem<String>(value: t['id'], child: Text(t['name']))).toList(),
+              ..._teachers.map((t) => DropdownMenuItem<String>(value: t['id'], child: Text(t['name']))),
             ],
             onChanged: (val) {
               setState(() {
